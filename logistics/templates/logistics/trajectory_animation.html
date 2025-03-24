@@ -1,0 +1,184 @@
+<!-- templates/trajectory_animation.html -->
+{% extends "logistics/base.html" %}
+{% block title %}移動軌跡動畫 - 智慧工廠物流{% endblock %}
+{% block content %}
+<div class="mb-4">
+  <h1 class="text-center">機器人移動軌跡動畫</h1>
+  <p class="text-center">分別播放原始與最佳化路徑，每 0.5 秒新增一個運送點。</p>
+  <div class="row">
+    <!-- 原始路徑圖 -->
+    <div class="col-md-6 text-center">
+      <h3>原始路徑</h3>
+      <canvas id="origChart" style="max-width:400px;"></canvas>
+      <div class="mt-2">
+        <button id="origPlayBtn" class="btn btn-primary btn-sm">播放</button>
+        <button id="origPauseBtn" class="btn btn-secondary btn-sm">暫停</button>
+        <button id="origResetBtn" class="btn btn-danger btn-sm">重置</button>
+      </div>
+    </div>
+    <!-- 最佳化路徑圖 -->
+    <div class="col-md-6 text-center">
+      <h3>最佳化路徑</h3>
+      <canvas id="optChart" style="max-width:400px;"></canvas>
+      <div class="mt-2">
+        <button id="optPlayBtn" class="btn btn-primary btn-sm">播放</button>
+        <button id="optPauseBtn" class="btn btn-secondary btn-sm">暫停</button>
+        <button id="optResetBtn" class="btn btn-danger btn-sm">重置</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+  // 從後端傳入原始與最佳化座標資料
+  const originalCoords = {{ original_coords|safe }};
+  const optimizedCoords = {{ optimized_coords|safe }};
+  
+  const origFullData = originalCoords.map(coord => ({ x: coord.x, y: coord.y }));
+  const optFullData = optimizedCoords.map(coord => ({ x: coord.x, y: coord.y }));
+  
+  let origDisplayedData = [];
+  let optDisplayedData = [];
+  let origCurrentIndex = 0;
+  let optCurrentIndex = 0;
+  let origIntervalId = null;
+  let optIntervalId = null;
+  
+  // 原始路徑 scatter chart
+  const ctxOrig = document.getElementById('origChart').getContext('2d');
+  const origChart = new Chart(ctxOrig, {
+      type: 'scatter',
+      data: {
+          datasets: [{
+              label: '原始路徑',
+              data: origDisplayedData,
+              showLine: true,
+              fill: false,
+              borderColor: 'rgba(255, 99, 132, 1)',
+              backgroundColor: 'rgba(255, 99, 132, 0.4)',
+              pointRadius: 5,
+              tension: 0.2
+          }]
+      },
+      options: {
+          responsive: true,
+          animation: false,
+          scales: {
+              x: { type: 'linear', position: 'bottom', title: { display: true, text: 'X 座標' }},
+              y: { title: { display: true, text: 'Y 座標' }}
+          },
+          plugins: {
+              tooltip: {
+                  callbacks: {
+                      label: function(context) {
+                          return '(' + context.parsed.x + ', ' + context.parsed.y + ')';
+                      }
+                  }
+              }
+          }
+      }
+  });
+  
+  // 最佳化路徑 scatter chart
+  const ctxOpt = document.getElementById('optChart').getContext('2d');
+  const optChart = new Chart(ctxOpt, {
+      type: 'scatter',
+      data: {
+          datasets: [{
+              label: '最佳化路徑',
+              data: optDisplayedData,
+              showLine: true,
+              fill: false,
+              borderColor: 'rgba(54, 162, 235, 1)',
+              backgroundColor: 'rgba(54, 162, 235, 0.4)',
+              pointRadius: 5,
+              tension: 0.2
+          }]
+      },
+      options: {
+          responsive: true,
+          animation: false,
+          scales: {
+              x: { type: 'linear', position: 'bottom', title: { display: true, text: 'X 座標' }},
+              y: { title: { display: true, text: 'Y 座標' }}
+          },
+          plugins: {
+              tooltip: {
+                  callbacks: {
+                      label: function(context) {
+                          return '(' + context.parsed.x + ', ' + context.parsed.y + ')';
+                      }
+                  }
+              }
+          }
+      }
+  });
+  
+  function updateOrigChart() {
+      if (origCurrentIndex < origFullData.length) {
+          origDisplayedData.push(origFullData[origCurrentIndex]);
+          origChart.update();
+          origCurrentIndex++;
+      } else {
+          clearInterval(origIntervalId);
+          origIntervalId = null;
+      }
+  }
+  function updateOptChart() {
+      if (optCurrentIndex < optFullData.length) {
+          optDisplayedData.push(optFullData[optCurrentIndex]);
+          optChart.update();
+          optCurrentIndex++;
+      } else {
+          clearInterval(optIntervalId);
+          optIntervalId = null;
+      }
+  }
+  
+  // 原始路徑圖控制
+  function origPlay() {
+      if (!origIntervalId) {
+          origIntervalId = setInterval(updateOrigChart, 500);
+      }
+  }
+  function origPause() {
+      if (origIntervalId) {
+          clearInterval(origIntervalId);
+          origIntervalId = null;
+      }
+  }
+  function origReset() {
+      origPause();
+      origDisplayedData.length = 0;
+      origCurrentIndex = 0;
+      origChart.update();
+  }
+  
+  // 最佳化路徑圖控制
+  function optPlay() {
+      if (!optIntervalId) {
+          optIntervalId = setInterval(updateOptChart, 500);
+      }
+  }
+  function optPause() {
+      if (optIntervalId) {
+          clearInterval(optIntervalId);
+          optIntervalId = null;
+      }
+  }
+  function optReset() {
+      optPause();
+      optDisplayedData.length = 0;
+      optCurrentIndex = 0;
+      optChart.update();
+  }
+  
+  document.getElementById('origPlayBtn').addEventListener('click', origPlay);
+  document.getElementById('origPauseBtn').addEventListener('click', origPause);
+  document.getElementById('origResetBtn').addEventListener('click', origReset);
+  document.getElementById('optPlayBtn').addEventListener('click', optPlay);
+  document.getElementById('optPauseBtn').addEventListener('click', optPause);
+  document.getElementById('optResetBtn').addEventListener('click', optReset);
+</script>
+{% endblock %}

@@ -1,0 +1,41 @@
+<!-- templates/cost_comparison.html -->
+{% extends "logistics/base.html" %}
+{% block title %}成本比較 - 智慧工廠物流{% endblock %}
+{% block content %}
+<div class="mb-4">
+  <h1 class="text-center">成本比較</h1>
+  <p class="text-center">
+    原始路徑成本：<strong>{{ orig_cost|floatformat:2 }}</strong> ，最佳化路徑成本：<strong>{{ opt_cost|floatformat:2 }}</strong>
+  </p>
+  <canvas id="costChart" class="mx-auto d-block" style="width:100%; max-width:800px; height:400px;"></canvas>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+  const ctxBar = document.getElementById('costChart').getContext('2d');
+  const costChart = new Chart(ctxBar, {
+      type: 'bar',
+      data: {
+          labels: ['原始路徑成本', '最佳化路徑成本'],
+          datasets: [{
+              label: '成本比較',
+              data: [{{ orig_cost }}, {{ opt_cost }}],
+              backgroundColor: [
+                  'rgba(255, 99, 132, 0.6)',
+                  'rgba(54, 162, 235, 0.6)'
+              ],
+              borderColor: [
+                  'rgba(255, 99, 132, 1)',
+                  'rgba(54, 162, 235, 1)'
+              ],
+              borderWidth: 1
+          }]
+      },
+      options: {
+          animation: { duration: 1500 },
+          scales: { y: { beginAtZero: true } },
+          plugins: { tooltip: { enabled: true } }
+      }
+  });
+</script>
+{% endblock %}
