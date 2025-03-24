@@ -15,10 +15,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-"""
-這個模組定義了 factory_project 的 URL 路由配置。
-包含了管理員、帳號認證、以及 logistics 應用的各種頁面路由。
-"""
 
 from django.contrib import admin
 from django.urls import path, include

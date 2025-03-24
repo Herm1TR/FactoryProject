@@ -1,29 +1,29 @@
 <!-- templates/dashboard.html -->
 {% extends "logistics/base.html" %}
-{% block title %}Dashboard - 智慧工廠物流{% endblock %}
+{% block title %}Dashboard - Smart Factory Logistics{% endblock %}
 {% block content %}
 <div class="container">
-  <h1 class="text-center mb-4">各碼頭累計送貨量</h1>
+  <h1 class="text-center mb-4">Cumulative Delivery Volume by Dock</h1>
   <canvas id="dockChart" class="mx-auto d-block" style="width:100%; max-width:800px; height:400px;"></canvas>
 </div>
 {% endblock %}
 {% block extra_js %}
 <script>
-  // 從 Django 傳入的 dock_data
+  // dock_data passed from Django
   const dockData = {{ dock_data|safe }};
   
-  // 解析資料：名稱與送貨量
+  // Parse data: names and delivery volumes
   const labels = dockData.map(item => item.name);
   const totalLoads = dockData.map(item => item.total_load);
   
-  // 建立 Chart.js 長條圖
+  // Create Chart.js bar chart
   const ctx = document.getElementById('dockChart').getContext('2d');
   const dockChart = new Chart(ctx, {
       type: 'bar',
       data: {
           labels: labels,
           datasets: [{
-              label: '累計送貨量',
+              label: 'Cumulative Delivery Volume',
               data: totalLoads,
               backgroundColor: 'rgba(75, 192, 192, 0.6)',
               borderColor: 'rgba(75, 192, 192, 1)',
@@ -38,4 +38,3 @@
   });
 </script>
 {% endblock %}
-

@@ -1,29 +1,29 @@
 <!-- templates/trajectory_animation.html -->
 {% extends "logistics/base.html" %}
-{% block title %}移動軌跡動畫 - 智慧工廠物流{% endblock %}
+{% block title %}Movement Trajectory Animation - Smart Factory Logistics{% endblock %}
 {% block content %}
 <div class="mb-4">
-  <h1 class="text-center">機器人移動軌跡動畫</h1>
-  <p class="text-center">分別播放原始與最佳化路徑，每 0.5 秒新增一個運送點。</p>
+  <h1 class="text-center">Robot Movement Trajectory Animation</h1>
+  <p class="text-center">Plays both original and optimized paths, adding a delivery point every 0.5 seconds.</p>
   <div class="row">
-    <!-- 原始路徑圖 -->
+    <!-- Original Path Chart -->
     <div class="col-md-6 text-center">
-      <h3>原始路徑</h3>
+      <h3>Original Path</h3>
       <canvas id="origChart" style="max-width:400px;"></canvas>
       <div class="mt-2">
-        <button id="origPlayBtn" class="btn btn-primary btn-sm">播放</button>
-        <button id="origPauseBtn" class="btn btn-secondary btn-sm">暫停</button>
-        <button id="origResetBtn" class="btn btn-danger btn-sm">重置</button>
+        <button id="origPlayBtn" class="btn btn-primary btn-sm">Play</button>
+        <button id="origPauseBtn" class="btn btn-secondary btn-sm">Pause</button>
+        <button id="origResetBtn" class="btn btn-danger btn-sm">Reset</button>
       </div>
     </div>
-    <!-- 最佳化路徑圖 -->
+    <!-- Optimized Path Chart -->
     <div class="col-md-6 text-center">
-      <h3>最佳化路徑</h3>
+      <h3>Optimized Path</h3>
       <canvas id="optChart" style="max-width:400px;"></canvas>
       <div class="mt-2">
-        <button id="optPlayBtn" class="btn btn-primary btn-sm">播放</button>
-        <button id="optPauseBtn" class="btn btn-secondary btn-sm">暫停</button>
-        <button id="optResetBtn" class="btn btn-danger btn-sm">重置</button>
+        <button id="optPlayBtn" class="btn btn-primary btn-sm">Play</button>
+        <button id="optPauseBtn" class="btn btn-secondary btn-sm">Pause</button>
+        <button id="optResetBtn" class="btn btn-danger btn-sm">Reset</button>
       </div>
     </div>
   </div>
@@ -31,7 +31,7 @@
 {% endblock %}
 {% block extra_js %}
 <script>
-  // 從後端傳入原始與最佳化座標資料
+  // Original and optimized coordinate data from backend
   const originalCoords = {{ original_coords|safe }};
   const optimizedCoords = {{ optimized_coords|safe }};
   
@@ -45,13 +45,13 @@
   let origIntervalId = null;
   let optIntervalId = null;
   
-  // 原始路徑 scatter chart
+  // Original path scatter chart
   const ctxOrig = document.getElementById('origChart').getContext('2d');
   const origChart = new Chart(ctxOrig, {
       type: 'scatter',
       data: {
           datasets: [{
-              label: '原始路徑',
+              label: 'Original Path',
               data: origDisplayedData,
               showLine: true,
               fill: false,
@@ -65,8 +65,8 @@
           responsive: true,
           animation: false,
           scales: {
-              x: { type: 'linear', position: 'bottom', title: { display: true, text: 'X 座標' }},
-              y: { title: { display: true, text: 'Y 座標' }}
+              x: { type: 'linear', position: 'bottom', title: { display: true, text: 'X Coordinate' }},
+              y: { title: { display: true, text: 'Y Coordinate' }}
           },
           plugins: {
               tooltip: {
@@ -80,13 +80,13 @@
       }
   });
   
-  // 最佳化路徑 scatter chart
+  // Optimized path scatter chart
   const ctxOpt = document.getElementById('optChart').getContext('2d');
   const optChart = new Chart(ctxOpt, {
       type: 'scatter',
       data: {
           datasets: [{
-              label: '最佳化路徑',
+              label: 'Optimized Path',
               data: optDisplayedData,
               showLine: true,
               fill: false,
@@ -100,8 +100,8 @@
           responsive: true,
           animation: false,
           scales: {
-              x: { type: 'linear', position: 'bottom', title: { display: true, text: 'X 座標' }},
-              y: { title: { display: true, text: 'Y 座標' }}
+              x: { type: 'linear', position: 'bottom', title: { display: true, text: 'X Coordinate' }},
+              y: { title: { display: true, text: 'Y Coordinate' }}
           },
           plugins: {
               tooltip: {
@@ -136,7 +136,7 @@
       }
   }
   
-  // 原始路徑圖控制
+  // Original path chart controls
   function origPlay() {
       if (!origIntervalId) {
           origIntervalId = setInterval(updateOrigChart, 500);
@@ -155,7 +155,7 @@
       origChart.update();
   }
   
-  // 最佳化路徑圖控制
+  // Optimized path chart controls
   function optPlay() {
       if (!optIntervalId) {
           optIntervalId = setInterval(updateOptChart, 500);

@@ -1,10 +1,10 @@
 <!-- templates/cumulative_cost.html -->
 {% extends "logistics/base.html" %}
-{% block title %}累積成本變化 - 智慧工廠物流{% endblock %}
+{% block title %}Cumulative Cost Changes - Smart Factory Logistics{% endblock %}
 {% block content %}
 <div class="mb-4">
-  <h1 class="text-center">累積成本變化</h1>
-  <p class="text-center">展示機器人每次運送後的累積成本變化。</p>
+  <h1 class="text-center">Cumulative Cost Changes</h1>
+  <p class="text-center">Shows the cumulative cost changes after each robot delivery.</p>
   <canvas id="routeChart" class="mx-auto d-block" style="width:100%; max-width:1000px; height:500px;"></canvas>
 </div>
 {% endblock %}
@@ -15,7 +15,7 @@
   const maxLen = Math.max(originalCum.length, optimizedCum.length);
   const labels = [];
   for (let i = 1; i <= maxLen; i++) {
-      labels.push('第 ' + i + ' 次');
+      labels.push('Delivery ' + i);
   }
   const ctxLine = document.getElementById('routeChart').getContext('2d');
   const routeChart = new Chart(ctxLine, {
@@ -24,7 +24,7 @@
           labels: labels,
           datasets: [
               {
-                  label: '原始路徑累積成本',
+                  label: 'Original Path Cumulative Cost',
                   data: originalCum,
                   borderColor: 'rgba(255, 99, 132, 1)',
                   backgroundColor: 'rgba(255, 99, 132, 0.2)',
@@ -33,7 +33,7 @@
                   pointRadius: 5
               },
               {
-                  label: '最佳化路徑累積成本',
+                  label: 'Optimized Path Cumulative Cost',
                   data: optimizedCum,
                   borderColor: 'rgba(54, 162, 235, 1)',
                   backgroundColor: 'rgba(54, 162, 235, 0.2)',
@@ -47,8 +47,8 @@
           animation: { duration: 1500 },
           responsive: true,
           scales: {
-              x: { title: { display: true, text: '運送次數' } },
-              y: { beginAtZero: true, title: { display: true, text: '累積成本 (距離)' } }
+              x: { title: { display: true, text: 'Number of Deliveries' } },
+              y: { beginAtZero: true, title: { display: true, text: 'Cumulative Cost (Distance)' } }
           }
       }
   });

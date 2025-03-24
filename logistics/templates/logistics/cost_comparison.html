@@ -1,11 +1,11 @@
 <!-- templates/cost_comparison.html -->
 {% extends "logistics/base.html" %}
-{% block title %}成本比較 - 智慧工廠物流{% endblock %}
+{% block title %}Cost Comparison - Smart Factory Logistics{% endblock %}
 {% block content %}
 <div class="mb-4">
-  <h1 class="text-center">成本比較</h1>
+  <h1 class="text-center">Cost Comparison</h1>
   <p class="text-center">
-    原始路徑成本：<strong>{{ orig_cost|floatformat:2 }}</strong> ，最佳化路徑成本：<strong>{{ opt_cost|floatformat:2 }}</strong>
+    Original Path Cost: <strong>{{ orig_cost|floatformat:2 }}</strong>, Optimized Path Cost: <strong>{{ opt_cost|floatformat:2 }}</strong>
   </p>
   <canvas id="costChart" class="mx-auto d-block" style="width:100%; max-width:800px; height:400px;"></canvas>
 </div>
@@ -16,9 +16,9 @@
   const costChart = new Chart(ctxBar, {
       type: 'bar',
       data: {
-          labels: ['原始路徑成本', '最佳化路徑成本'],
+          labels: ['Original Path Cost', 'Optimized Path Cost'],
           datasets: [{
-              label: '成本比較',
+              label: 'Cost Comparison',
               data: [{{ orig_cost }}, {{ opt_cost }}],
               backgroundColor: [
                   'rgba(255, 99, 132, 0.6)',

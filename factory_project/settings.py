@@ -75,9 +75,9 @@ TEMPLATES = [
     },
 ]
 
-# 使用內建的登入頁面 (如 /accounts/login/)
+# Login template 
 LOGIN_URL = '/accounts/login/'
-# 登入成功後導向的 URL
+# Successful redirect URL
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 

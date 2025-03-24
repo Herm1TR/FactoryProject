@@ -1,15 +1,15 @@
 <!-- templates/index.html -->
 {% extends "logistics/base.html" %}
-{% block title %}首頁 - 智慧工廠物流{% endblock %}
+{% block title %}Home - Smart Factory Logistics{% endblock %}
 {% block content %}
 <div class="text-center">
-  <h1 class="mb-4">智慧工廠物流系統</h1>
-  <p class="lead">請選擇下列功能進行查看：</p>
+  <h1 class="mb-4">Smart Factory Logistics System</h1>
+  <p class="lead">Please select from the following functions:</p>
   <div class="d-grid gap-3 col-6 mx-auto">
-    <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-lg">儀表</a>
-    <a href="{% url 'cost_comparison' %}" class="btn btn-primary btn-lg">成本比較 (Bar Chart)</a>
-    <a href="{% url 'cumulative_cost' %}" class="btn btn-success btn-lg">累積成本變化 (Line Chart)</a>
-    <a href="{% url 'trajectory_animation' %}" class="btn btn-info btn-lg">機器人移動軌跡動畫</a>
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-lg">Dashboard</a>
+    <a href="{% url 'cost_comparison' %}" class="btn btn-primary btn-lg">Cost Comparison (Bar Chart)</a>
+    <a href="{% url 'cumulative_cost' %}" class="btn btn-success btn-lg">Cumulative Cost Changes (Line Chart)</a>
+    <a href="{% url 'trajectory_animation' %}" class="btn btn-info btn-lg">Robot Movement Trajectory Animation</a>
   </div>
 </div>
 {% endblock %}
