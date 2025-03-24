@@ -72,6 +72,53 @@
    * `views.py`：各頁面的視圖函式，負責處理請求與回傳資料。
    * `optimization.py`：包含物流最佳化演算法相關函式。
    * 其他模板與靜態檔案：用於前端頁面展示。
+   * **management/commands/**
+      * `cleardata.py`: 用於清除系統中的資料
+      * `populatedata.py`: 用於生成模擬運送資料
+
+## 管理指令說明
+
+專案包含兩個自定義管理指令，用於資料管理與測試：
+
+### cleardata
+
+```bash
+python manage.py cleardata [--logisticsdata] [--dock]
+```
+
+此指令用於清除系統中的資料，具有以下參數：
+- `--logisticsdata`：清除所有 LogisticsData 資料
+- `--dock`：清除所有 Dock 資料
+- 必須至少指定一個參數
+
+範例：
+```bash
+# 清除所有運送記錄
+python manage.py cleardata --logisticsdata
+
+# 清除所有碼頭資料
+python manage.py cleardata --dock
+
+# 同時清除運送記錄和碼頭資料
+python manage.py cleardata --logisticsdata --dock
+```
+
+### populatedata
+
+```bash
+python manage.py populatedata
+```
+
+此指令用於產生原始模擬運送資料（不考慮 Dock 是否滿載），以便展示最佳化前後的差異。執行此指令會：
+
+1. 建立或更新四個碼頭資料（Dock A、B、C、D）
+2. 建立或更新兩個機器人資料（Robot001、Robot002）
+3. 建立或確認倉庫資料（Warehouse，位置固定在座標原點 0,0）
+4. 模擬 10 趟運送，每趟最多送 5 單位貨物
+5. 每趟運送從倉庫出發，隨機選擇碼頭進行送貨，不考慮碼頭是否已滿載
+6. 每趟運送結束後，機器人會回到倉庫
+
+此指令對於測試系統功能和視覺化效果非常有用，特別是需要比較最佳化前後的運送路徑與成本差異時。
 
 ## 配置設定
 
