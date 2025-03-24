@@ -1,32 +1,32 @@
 # Factory Project
 
-## 專案簡介與背景
+## Project Introduction and Background
 
-本專案旨在展示如何在 Django 框架下應用物流運輸與最佳化演算法。透過這個專案，你可以看到如何將使用者認證、資料展示與複雜演算法相結合，模擬實際物流運輸中的路徑規劃與成本比較，進而提升運送效率。此專案同時也展現了如何運用 Django 強大的 ORM 以及模板系統來建立一個結構清晰、易於維護的應用程式。
+This project aims to demonstrate how to apply logistics transportation and optimization algorithms within the Django framework. Through this project, you can see how to combine user authentication, data visualization, and complex algorithms to simulate route planning and cost comparison in actual logistics transportation, thereby improving delivery efficiency. This project also showcases how to use Django's powerful ORM and template system to build a clearly structured and easily maintainable application.
 
-## 主要功能
+## Main Features
 
-* **使用者認證與註冊：** 利用 Django 內建的認證系統，提供註冊、登入與登出的功能，保護應用的敏感頁面。
-* **Dashboard 顯示碼頭運作狀況：** 提供各個碼頭的當前載重與歷史運送數據，讓使用者能夠一目瞭然各碼頭的運作情形。
-* **成本比較與最佳化路徑計算：** 透過對比原始運送路徑與最佳化演算法計算後的路徑，展示物流運輸成本的變化，並以圖表形式呈現。
-* **動態展示機器人運送軌跡：** 以動畫形式展示機器人運送過程中的移動軌跡，直觀呈現物流運作過程。
+* **User Authentication and Registration:** Utilizing Django's built-in authentication system to provide registration, login, and logout functions, protecting sensitive pages of the application.
+* **Dashboard Displaying Dock Operational Status:** Providing current load and historical shipping data for each dock, allowing users to get a clear overview of dock operations at a glance.
+* **Cost Comparison and Optimized Route Calculation:** Showcasing changes in logistics transportation costs by comparing original shipping routes with routes calculated by optimization algorithms, presented in chart form.
+* **Dynamic Display of Robot Delivery Trajectories:** Displaying the movement trajectories of robots during the delivery process in animated form, intuitively presenting logistics operations.
 
-## 技術棧
+## Technology Stack
 
-* **後端框架：** Django
-* **資料庫：** SQLite（開發階段使用，可根據需求調整）
-* **前端：** 使用 Django 模板語言搭配基本的 HTML/CSS/JavaScript
-* **其他套件：**
-   * python-decouple 或 django-environ（用於管理敏感資訊與環境變數）
+* **Backend Framework:** Django
+* **Database:** SQLite (used during development, can be adjusted as needed)
+* **Frontend:** Using Django template language combined with basic HTML/CSS/JavaScript
+* **Other Packages:**
+   * python-decouple or django-environ (for managing sensitive information and environment variables)
 
-## 安裝與執行步驟
+## Installation and Execution Steps
 
-1. **建立虛擬環境：**
+1. **Create a Virtual Environment:**
    ```bash
    python -m venv env
    ```
 
-2. **啟動虛擬環境：**
+2. **Activate the Virtual Environment:**
    * Windows:
    ```bash
    env\Scripts\activate
@@ -36,49 +36,49 @@
    source env/bin/activate
    ```
 
-3. **安裝依賴：** 確保 `requirements.txt` 文件中已列出所有依賴，然後執行：
+3. **Install Dependencies:** Ensure all dependencies are listed in the `requirements.txt` file, then run:
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **設定環境變數：** 在專案根目錄下建立一個 `.env` 文件，並加入：
+4. **Set Environment Variables:** Create a `.env` file in the project root directory, and add:
    ```ini
-   SECRET_KEY=你的秘密金鑰
+   SECRET_KEY=your_secret_key
    DEBUG=True
    ```
-   注意：將 `.env` 文件加入 `.gitignore` 以防止敏感資訊上傳到 GitHub。
+   Note: Add the `.env` file to `.gitignore` to prevent sensitive information from being uploaded to GitHub.
 
-5. **執行資料庫遷移：**
+5. **Run Database Migrations:**
    ```bash
    python manage.py makemigrations
    python manage.py migrate
    ```
 
-6. **啟動開發伺服器：**
+6. **Start the Development Server:**
    ```bash
    python manage.py runserver
    ```
 
-7. **訪問應用程式：** 打開瀏覽器並前往 http://127.0.0.1:8000 檢視專案。
+7. **Access the Application:** Open a browser and go to http://127.0.0.1:8000 to view the project.
 
-## 專案結構
+## Project Structure
 
 * **factory_project/**
-   * `settings.py`：專案設定檔，包含資料庫設定、應用程式安裝、環境變數讀取等。
-   * `urls.py`：全域 URL 路由配置。
-   * `manage.py`：Django 命令列工具。
+   * `settings.py`: Project configuration file, including database settings, application installation, environment variable reading, etc.
+   * `urls.py`: Global URL routing configuration.
+   * `manage.py`: Django command-line tool.
 * **logistics/**
-   * `models.py`：定義碼頭、機器人、運送記錄及倉庫等資料模型。
-   * `views.py`：各頁面的視圖函式，負責處理請求與回傳資料。
-   * `optimization.py`：包含物流最佳化演算法相關函式。
-   * 其他模板與靜態檔案：用於前端頁面展示。
+   * `models.py`: Defines data models for docks, robots, delivery records, and warehouses.
+   * `views.py`: View functions for each page, responsible for handling requests and returning data.
+   * `optimization.py`: Contains functions related to logistics optimization algorithms.
+   * Other templates and static files: For frontend page display.
    * **management/commands/**
-      * `cleardata.py`: 用於清除系統中的資料
-      * `populatedata.py`: 用於生成模擬運送資料
+      * `cleardata.py`: Used to clear data in the system
+      * `populatedata.py`: Used to generate simulated delivery data
 
-## 管理指令說明
+## Management Commands
 
-專案包含兩個自定義管理指令，用於資料管理與測試：
+The project includes two custom management commands for data management and testing:
 
 ### cleardata
 
@@ -86,20 +86,20 @@
 python manage.py cleardata [--logisticsdata] [--dock]
 ```
 
-此指令用於清除系統中的資料，具有以下參數：
-- `--logisticsdata`：清除所有 LogisticsData 資料
-- `--dock`：清除所有 Dock 資料
-- 必須至少指定一個參數
+This command is used to clear data in the system and has the following parameters:
+- `--logisticsdata`: Clear all LogisticsData records
+- `--dock`: Clear all Dock data
+- At least one parameter must be specified
 
-範例：
+Examples:
 ```bash
-# 清除所有運送記錄
+# Clear all delivery records
 python manage.py cleardata --logisticsdata
 
-# 清除所有碼頭資料
+# Clear all dock data
 python manage.py cleardata --dock
 
-# 同時清除運送記錄和碼頭資料
+# Clear both delivery records and dock data
 python manage.py cleardata --logisticsdata --dock
 ```
 
@@ -109,28 +109,28 @@ python manage.py cleardata --logisticsdata --dock
 python manage.py populatedata
 ```
 
-此指令用於產生原始模擬運送資料（不考慮 Dock 是否滿載），以便展示最佳化前後的差異。執行此指令會：
+This command is used to generate original simulated delivery data (without considering whether the dock is fully loaded) to demonstrate the differences before and after optimization. Running this command will:
 
-1. 建立或更新四個碼頭資料（Dock A、B、C、D）
-2. 建立或更新兩個機器人資料（Robot001、Robot002）
-3. 建立或確認倉庫資料（Warehouse，位置固定在座標原點 0,0）
-4. 模擬 10 趟運送，每趟最多送 5 單位貨物
-5. 每趟運送從倉庫出發，隨機選擇碼頭進行送貨，不考慮碼頭是否已滿載
-6. 每趟運送結束後，機器人會回到倉庫
+1. Create or update four dock data entries (Dock A, B, C, D)
+2. Create or update two robot data entries (Robot001, Robot002)
+3. Create or confirm warehouse data (Warehouse, fixed at coordinates origin 0,0)
+4. Simulate 10 deliveries, with each delivery carrying up to 5 units of cargo
+5. Each delivery starts from the warehouse, randomly selecting docks for delivery without considering whether the dock is already fully loaded
+6. After each delivery is completed, the robot returns to the warehouse
 
-此指令對於測試系統功能和視覺化效果非常有用，特別是需要比較最佳化前後的運送路徑與成本差異時。
+This command is very useful for testing system functionality and visualization effects, especially when comparing delivery routes and cost differences before and after optimization.
 
-## 配置設定
+## Configuration Settings
 
-專案中敏感資訊（例如 SECRET_KEY）不再硬編碼於程式碼中，而是使用環境變數來進行管理。建議使用以下方法之一：
+Sensitive information (such as SECRET_KEY) is no longer hardcoded in the code but is managed using environment variables. One of the following methods is recommended:
 
-* **python-decouple：** 在 `settings.py` 中使用：
+* **python-decouple:** In `settings.py`, use:
   ```python
   from decouple import config
   SECRET_KEY = config('SECRET_KEY')
   ```
 
-* **django-environ：** 在 `settings.py` 中使用：
+* **django-environ:** In `settings.py`, use:
   ```python
   import environ
   env = environ.Env(DEBUG=(bool, False))
@@ -138,21 +138,21 @@ python manage.py populatedata
   SECRET_KEY = env('SECRET_KEY')
   ```
 
-請確保 `.env` 文件不會上傳至 GitHub，並在 `.gitignore` 中加入：
+Make sure the `.env` file is not uploaded to GitHub by adding to `.gitignore`:
 ```
 .env
 ```
 
-## 貢獻指南
+## Contribution Guidelines
 
-若你有興趣為此專案做出貢獻，請參考以下步驟：
+If you are interested in contributing to this project, please follow these steps:
 
-1. Fork 此儲存庫。
-2. 建立你的 feature branch (`git checkout -b feature/你的功能描述`)。
-3. 提交你的修改 (`git commit -am '新增功能或修正錯誤'`)。
-4. Push 到你的 branch (`git push origin feature/你的功能描述`)。
-5. 提交一個 Pull Request。
+1. Fork this repository.
+2. Create your feature branch (`git checkout -b feature/your-feature-description`).
+3. Commit your changes (`git commit -am 'Add feature or fix bug'`).
+4. Push to your branch (`git push origin feature/your-feature-description`).
+5. Submit a Pull Request.
 
-## 授權條款
+## License
 
-本專案採用 MIT License 授權，詳情請參閱 LICENSE 文件。
+This project is licensed under the MIT License. See the LICENSE file for details.

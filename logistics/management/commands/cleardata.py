@@ -1,5 +1,3 @@
-# logistics/management/commands/cleardata.py
-
 from django.core.management.base import BaseCommand
 from logistics.models import LogisticsData, Dock
 
