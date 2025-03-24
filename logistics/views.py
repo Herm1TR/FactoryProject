@@ -10,7 +10,7 @@ import json
 
 def index(request):
     """
-    首頁 view，提供連結到各個功能頁面。
+    Home page view, providing links to various feature pages.
     """
     context = {}
     return render(request, 'logistics/index.html', context)
@@ -18,19 +18,19 @@ def index(request):
 @login_required
 def dashboard(request):
     """
-    Dashboard 視圖，展示各碼頭的當前載重與歷史運送數據
-    僅限已登入使用者存取，透過查詢 LogisticsData 模型取得歷史運送資料，
-    並計算每個 Dock 的累計送貨量。
+    Dashboard view, displaying the current load of each dock and historical delivery data.
+    Access is restricted to logged-in users. Historical delivery data is obtained by querying
+    the LogisticsData model, and the accumulated delivery amount for each Dock is calculated.
     
-    參數:
-        request (HttpRequest): HTTP 請求物件。
+    Parameters:
+        request (HttpRequest): HTTP request object.
     
-    返回:
-        HttpResponse: 渲染後的 dashboard 頁面。
+    Returns:
+        HttpResponse: The rendered dashboard page.
     """
     docks = Dock.objects.all()
     
-    # 統計每個碼頭累計送貨量
+    # Statistics for accumulated delivery amount for each dock
     dock_data = []
     for dock in docks:
         total_load = LogisticsData.objects.filter(dock=dock).aggregate(total=Sum('load_delivered'))['total'] or 0
@@ -47,17 +47,17 @@ def dashboard(request):
 
 def register(request):
     """
-    註冊新帳號的視圖，使用 Django 內建的 UserCreationForm。
-    若註冊成功，則自動登入並導向 dashboard。
+    View for registering a new account, using Django's built-in UserCreationForm.
+    If registration is successful, automatically logs in and redirects to the dashboard.
     """
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            # 儲存新使用者
+            # Save the new user
             user = form.save()
-            # 自動登入該使用者
+            # Automatically log in the user
             login(request, user)
-            # 導向 dashboard 頁面
+            # Redirect to the dashboard page
             return redirect('dashboard')
     else:
         form = UserCreationForm()
@@ -67,12 +67,12 @@ def register(request):
 @login_required
 def cost_comparison(request):
     """
-    顯示成本比較頁面 (Bar Chart)。
-    根據物流資料計算原始與最佳化路徑成本，並傳入模板。
+    Displays the cost comparison page (Bar Chart).
+    Calculates the original and optimized path costs based on logistics data and passes them to the template.
     """
     robot = Robot.objects.first()
     if not robot:
-        return HttpResponse("尚無機器人資料，請先產生資料。")
+        return HttpResponse("No robot data available yet, please generate data first.")
     
     orig_cost, orig_routes = calculate_original_cost(robot)
     opt_cost, _ = calculate_optimized_route(robot)
@@ -87,14 +87,14 @@ def cost_comparison(request):
 @login_required
 def cumulative_cost(request):
     """
-    顯示累積成本變化頁面 (Line Chart)。
-    計算原始與最佳化路徑累積成本資料，傳入模板。
+    Displays the cumulative cost change page (Line Chart).
+    Calculates the cumulative cost data for original and optimized paths and passes them to the template.
     """
     robot = Robot.objects.first()
     if not robot:
-        return HttpResponse("尚無機器人資料，請先產生資料。")
+        return HttpResponse("No robot data available yet, please generate data first.")
     
-    # 取得所有物流資料，依 timestamp 排序
+    # Get all logistics data, sorted by timestamp
     records = LogisticsData.objects.filter(robot=robot).order_by('timestamp')
     original_cum = []
     cumulative = 0
@@ -105,7 +105,7 @@ def cumulative_cost(request):
             cumulative += d
             original_cum.append(round(cumulative, 2))
     
-    # 取得最佳化運送結果，將多趟的 segments 扁平化
+    # Get optimized delivery results, flatten multiple trips' segments
     _, opt_trips = calculate_optimized_route(robot)
     flat_segments = []
     for trip in opt_trips:
@@ -127,14 +127,14 @@ def cumulative_cost(request):
 @login_required
 def trajectory_animation(request):
     """
-    顯示機器人移動軌跡動畫頁面 (Scatter Chart 動畫)。
-    準備原始與最佳化路徑的座標資料，供前端動畫展示使用。
+    Displays the robot movement trajectory animation page (Scatter Chart animation).
+    Prepares coordinate data for original and optimized paths for frontend animation display.
     """
     robot = Robot.objects.first()
     if not robot:
-        return HttpResponse("尚無機器人資料，請先產生資料。")
+        return HttpResponse("No robot data available yet, please generate data first.")
     
-    # 準備原始路徑座標資料（依照 timestamp 排序）
+    # Prepare original path coordinate data (sorted by timestamp)
     records = LogisticsData.objects.filter(robot=robot).order_by('timestamp')
     original_coords = [{'x': robot.current_x, 'y': robot.current_y}]
     for record in records:
@@ -142,7 +142,7 @@ def trajectory_animation(request):
         if end:
             original_coords.append({'x': end[0], 'y': end[1]})
     
-    # 準備最佳化路徑座標資料
+    # Prepare optimized path coordinate data
     _, opt_trips = calculate_optimized_route(robot)
     flat_segments = []
     for trip in opt_trips:

@@ -3,13 +3,13 @@ from .models import LogisticsData, Dock, Robot, Warehouse
 
 def parse_route(route_str):
     """
-    解析代表路徑的字串，格式為 'x1,y1 -> x2,y2'。
+    Parse a string representing a route, formatted as 'x1,y1 -> x2,y2'.
     
-    參數:
-        route_str (str): 表示路徑的字串，例如 "10,20 -> 30,40"。
+    Parameters:
+        route_str (str): A string representing a route, e.g. "10,20 -> 30,40".
         
-    返回:
-        tuple: 兩個座標的 tuple，分別表示起點和終點；如果解析失敗，則返回 (None, None)。
+    Returns:
+        tuple: A tuple of two coordinates, representing the start and end points; returns (None, None) if parsing fails.
     """
     try:
         start_str, end_str = route_str.split("->")
@@ -24,18 +24,19 @@ def euclidean_distance(p1, p2):
 
 def calculate_original_cost(robot):
     """
-    根據機器人的歷史運送資料計算原始路徑的總成本。
+    Calculate the total cost of the original path based on the robot's historical delivery data.
 
-    該函式從 LogisticsData 模型中取得與該機器人相關的所有運送記錄，
-    並透過解析每筆記錄中的路徑字串計算運送距離，再將所有距離加總。
+    This function retrieves all delivery records related to the robot from the LogisticsData model,
+    and calculates the delivery distance by parsing the route string in each record, then sums all distances.
 
-    參數:
-        robot (Robot): 要計算運送成本的機器人實例。
+    Parameters:
+        robot (Robot): The robot instance for which to calculate the delivery cost.
 
-    返回:
-        tuple: 包含以下兩個元素的 tuple：
-            - total_cost (float): 累計的總距離成本。
-            - original_routes (list): 每筆運送記錄的詳細資料列表，包含碼頭名稱、單段距離、路徑字串以及送貨量。
+    Returns:
+        tuple: A tuple containing the following two elements:
+            - total_cost (float): The accumulated total distance cost.
+            - original_routes (list): A list of detailed information for each delivery record, including dock name, 
+              segment distance, route string, and delivery amount.
     """
     records = LogisticsData.objects.filter(robot=robot)
     total_cost = 0
@@ -45,7 +46,7 @@ def calculate_original_cost(robot):
         if start and end:
             d = euclidean_distance(start, end)
             total_cost += d
-            # 如果 dock 為 None，顯示為 Warehouse
+            # If dock is None, display as Warehouse
             dock_name = record.dock.name if record.dock is not None else 'Warehouse'
             original_routes.append({
                 'dock': dock_name,
@@ -57,23 +58,25 @@ def calculate_original_cost(robot):
 
 def calculate_optimized_route(robot):
     """
-    計算機器人的最佳化運送路徑，以降低總運送成本。
+    Calculate the optimized delivery route for a robot to reduce the total delivery cost.
 
-    此函式先取得或建立倉庫座標，並將所有碼頭的當前載重重置為 0。接著，
-    根據 LogisticsData 中的資料累積各碼頭的送貨量，並根據每個碼頭的最大容量做調整。
-    最後，以貪婪法模擬機器人從倉庫出發到各個碼頭的多趟運送，每趟運送依據距離選擇
-    最近的碼頭，直到機器人的載重達到上限，並返回最佳化後的運送結果與總成本。
+    This function first retrieves or creates the warehouse coordinates, and resets the current load of all docks to 0.
+    Then, it accumulates the delivery amount for each dock based on the data in LogisticsData, and adjusts it
+    according to the maximum capacity of each dock. Finally, it simulates multiple trips of the robot from the 
+    warehouse to various docks using a greedy algorithm, selecting the nearest dock for each trip until the 
+    robot's load reaches its limit, and returns the optimized delivery results and total cost.
 
-    參數:
-        robot (Robot): 要計算最佳化路徑的機器人實例。
+    Parameters:
+        robot (Robot): The robot instance for which to calculate the optimized route.
 
-    返回:
-        tuple: 包含以下兩個元素的 tuple：
-            - total_cost (float): 所有最佳化運送趟次累計的總距離成本。
-            - optimized_trips (list): 每趟運送的詳細資料列表，每筆資料包含行程編號、單趟運送成本及
-              每個段落的詳細資訊（起點、終點、距離、送貨量、碼頭名稱及位置）。
+    Returns:
+        tuple: A tuple containing the following two elements:
+            - total_cost (float): The accumulated total distance cost of all optimized delivery trips.
+            - optimized_trips (list): A list of detailed information for each trip, each record containing the trip number,
+              single trip cost, and detailed information for each segment (start point, end point, distance, 
+              delivery amount, dock name and position).
     """
-    # 取得倉庫座標從 Warehouse 模型，若不存在則建立
+    # Get warehouse coordinates from the Warehouse model, create if it doesn't exist
     warehouse_obj, created = Warehouse.objects.get_or_create(
         id=1,
         defaults={'location_x': 0, 'location_y': 0, 'pending_cargo': 0}
